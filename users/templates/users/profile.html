@@ -1,0 +1,10 @@
+{% extends "users/base.html" %}
+
+{% block title %}Profile{% endblock title %}
+
+{% block content %}
+<form action="{% url 'users:logout' %}" method="post">
+    {% csrf_token %}
+    <button type="submit">Logout</button>
+</form>
+{% endblock content %}

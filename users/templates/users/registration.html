@@ -9,10 +9,15 @@
 
 
 {% block content %}
-<form action="action_page" class="reg-form">
+<form action="{% url "users:registration" %}" class="reg-form" method='post'>
+  {% csrf_token %}
     <div class="container">
       <h1>Registration</h1>
+      {% if message %}
+      <p>{{ message }}</p>
+      {% else %}
       <p>Fill this form to create an account.</p>
+      {% endif %}
       <hr>
       <label for="email"><b>Email</b></label>
       <input type="email" placeholder="Enter Email" name="email" id="email" required>
@@ -23,8 +28,8 @@
       <label for="psw"><b>Password</b></label>
       <input type="password" placeholder="Enter Password" name="psw" id="psw" required>
   
-      <label for="psw-repeat"><b>Repeat Password</b></label>
-      <input type="password" placeholder="Repeat Password" name="psw-repeat" id="psw-repeat" required>
+      <label for="psw_repeat"><b>Repeat Password</b></label>
+      <input type="password" placeholder="Repeat Password" name="psw_repeat" id="psw_repeat" required>
       <hr>
       <button type="submit" class="registerbtn">Register</button>
     </div>

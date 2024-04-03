@@ -9,10 +9,15 @@
 
 
 {% block content %}
-<form action="action_page" class="log-form">
+<form action="{% url "users:login" %}" class="log-form" method='post'>
+  {% csrf_token %}
     <div class="container">
       <h1>Login</h1>
+      {% if message %}
+      <p>{{ message }}</p>
+      {% else %}
       <p>Fill this form to log into your account.</p>
+      {% endif %}
       <hr>
       <label for="username"><b>Username</b></label>
       <input type="text" placeholder="Enter Username" name="username" id="username" required>
