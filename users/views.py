@@ -30,14 +30,14 @@ def log(request):
         user = authenticate(request, username=username, password=psw)
         if user is not None:
             login(request, user)
-            return redirect('users:profileauth')
+            return redirect('users:profile')
         else:
             message = "Login's error!"
             return render(request, 'users/login.html', {'message': message}) 
     else:
         if request.user.is_authenticated:
             message = "By filling this form you'll login in another account!"
-            return render(request, 'users/registration.html', {'message': message})
+            return render(request, 'users/login.html', {'message': message})
         return render(request, 'users/login.html')
 
 def profile(request):
