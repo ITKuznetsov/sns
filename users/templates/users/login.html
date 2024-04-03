@@ -1,0 +1,30 @@
+{% extends "users/base.html" %}
+
+{% block title %}Login{% endblock title %}
+{% block css %}
+.log-form {
+    text-align: center;
+}
+{% endblock css %}
+
+
+{% block content %}
+<form action="action_page" class="log-form">
+    <div class="container">
+      <h1>Login</h1>
+      <p>Fill this form to log into your account.</p>
+      <hr>
+      <label for="username"><b>Username</b></label>
+      <input type="text" placeholder="Enter Username" name="username" id="username" required>
+  
+      <label for="psw"><b>Password</b></label>
+      <input type="password" placeholder="Enter Password" name="psw" id="psw" required>
+      <hr>
+      <button type="submit" class="logbtn">Login</button>
+    </div>
+  
+    <div class="container signin">
+      <p>Don't have an account? <a href="{% url "users:registration" %}">Create one!</a></p>
+    </div>
+  </form>
+{% endblock content %}
