@@ -41,7 +41,37 @@ def log(request):
         return render(request, 'users/login.html')
 
 def profile(request):
-    return render(request, 'users/profile.html')
+    user = request.user
+    if request.method == 'POST':
+        email = request.POST.get('email')
+        username = request.POST.get('username')
+        password = request.POST.get('psw')
+        first_name = request.POST.get('fn')
+        last_name = request.POST.get('ln')
+        avatar = request.FILES.get('avatar')
+
+        if email:
+            user.email = email
+        if username:
+            user.username = username
+        if password:
+            user.set_password(password)
+        if first_name:
+            user.first_name = first_name
+        if last_name:
+            user.last_name = last_name
+        if avatar:
+            user.avatar = avatar
+
+        if any([email, username, password, first_name, last_name, avatar]):
+            user.save()
+
+        if password:
+            login(request, user)
+
+        return redirect('users:profile')
+
+    return render(request, 'users/profile.html', {'user': user})
 
 def out(request):
     logout(request)

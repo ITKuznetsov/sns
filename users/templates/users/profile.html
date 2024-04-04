@@ -2,9 +2,63 @@
 
 {% block title %}Profile{% endblock title %}
 
+{% block css %}
+.container {
+    text-align: center;
+}
+.avatar {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+}
+{% endblock css %}
+
 {% block content %}
-<form action="{% url 'users:logout' %}" method="post">
+{% comment %} <form action="{% url 'users:logout' %}" method="post">
     {% csrf_token %}
     <button type="submit">Logout</button>
-</form>
+</form> {% endcomment %}
+<div class="container">
+{% if user.is_authenticated %}
+    <p>Hello, @{{ user.username }}</p>
+        {% if user.avatar %}
+        <img src="{{ user.avatar.url }}" alt="img error" class="avatar">
+        {% endif %}
+        <p>Account created at: {{ user.date_joined }}</p>
+        <p>Last login at: {{ user.last_login }}</p>
+        <form action="{% url "users:logout" %}">
+        {% csrf_token %}
+        <button class="logout">Logout</button>
+        </form>
+        <form action="{% url "users:profile" %}" method='post' enctype="multipart/form-data">
+            {% csrf_token %}
+            <hr>
+            <hr>
+            <label for="email"><b>Email</b></label>
+            <input type="email" placeholder="{{ user.email }}" name="email" id="email">
+            <label for="username"><b>Username</b></label>
+            <input type="text" placeholder="@{{ user.username }}" name="username" id="username">
+            <label for="psw"><b>Password</b></label>
+            <input type="password" placeholder="Enter new password" name="psw" id="psw">
+            <hr>
+            <label for="fn"><b>First name</b></label>
+            <input type="text" placeholder="{{ user.first_name }}" name="fn" id="fn">
+            <label for="ln"><b>Last name</b></label>
+            <input type="text" placeholder="{{ user.last_name }}" name="ln" id="ln">
+            <hr>
+            <label for="avatar"><b>Avatar</b></label>
+            <input type="file" name="avatar" id="avatar">
+            <hr>
+            <hr>
+            <button type="submit" class="registerbtn">Save</button>
+        </form>
+    </div>
+{% else %}
+<h1>You're not autheficated!</h1>
+<hr>
+<p>Already have an account? <a href="{% url "users:login" %}">Sign in.</a></p>
+<p>Don't have an account? <a href="{% url "users:registration" %}">Create one!</a></p>
+</div>
+{% endif %}
+
 {% endblock content %}
