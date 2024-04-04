@@ -6,7 +6,7 @@
 .container {
     text-align: center;
 }
-.avatar {
+.profile-avatar {
     width: 150px;
     height: 150px;
     border-radius: 50%;
@@ -22,7 +22,7 @@
 {% if user.is_authenticated %}
     <p>Hello, @{{ user.username }}</p>
         {% if user.avatar %}
-        <img src="{{ user.avatar.url }}" alt="img error" class="avatar">
+        <img src="{{ user.avatar.url }}" alt="img error" class="profile-avatar">
         {% endif %}
         <p>Account created at: {{ user.date_joined }}</p>
         <p>Last login at: {{ user.last_login }}</p>

@@ -1,0 +1,162 @@
+{% extends "core/base.html" %}
+
+{% block title %}Index{% endblock title %}
+
+{% block css %}
+.post-container {
+    width: 40%;
+    margin: 20px auto;
+    padding: 10px;
+    border: 1px solid #333;
+    border-radius: 5px;
+}
+hr {
+    border: none;
+    border-top: 1px solid #333;
+}
+.post-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.post-author-image {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-right: 10px;
+}
+
+.user-info {
+    flex: 1;
+}
+
+.username {
+    font-weight: bold;
+}
+
+.post-date {
+    color: #333;
+}
+
+.author-comment {
+    margin-bottom: 10px;
+}
+
+.post-image {
+    margin-bottom: 10px;
+}
+
+.main-image {
+    width: 100%;
+    height: auto;
+    border-radius: 2%;
+}
+
+.comments {
+    margin-bottom: 10px;
+}
+
+.comment {
+    margin-bottom: 5px;
+}
+.actions {
+    display: flex;
+    justify-content: center;
+    margin-top: 10px;
+}
+
+.like-btn {
+    margin: 0 5px;
+    padding: 5px 10px;
+    background-color: red;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    background-color: #0faae4;
+    cursor: pointer;
+}
+ .dislike-btn {
+    margin: 0 5px;
+    padding: 5px 10px;
+    background-color: red;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    background-color: #ff0000;
+    cursor: pointer;
+ }
+
+.like-btn:hover {
+    background-color: #0e99cd;
+}
+.dislike-btn:hover {
+    background-color: #db0202;
+}
+{% endblock css %}
+
+
+{% block content %}
+<div class="post-container">
+    <div class="post-header">
+        <img src="{{ user.avatar.url }}" alt="Avatar" class="post-author-image">
+        <div class="user-info">
+            <span class="post-username">Username</span>
+            <span class="post-date">2024 |</span>
+            <span class="post-rating">Post rating: 90</span>
+            <hr>
+        </div>
+    </div>
+    <div class="author-comment">
+        <p>Post text post text post text</p>
+    </div>
+    <div class="post-image">
+        <img src="{{ user.avatar.url }}" alt="Post Image" class="main-image">
+    </div>
+    <div class="actions">
+        <button class="like-btn">Like</button>
+        <button class="dislike-btn">Dislike</button>
+    </div>
+    <hr>
+    <div class="comments">
+        <div class="comment">
+            <span>@{{ user.username }}</span>
+            <p>Comment 1</p>
+            <hr>
+        </div>
+        <div class="comment">
+            <p>Comment 2</p>
+        </div>
+    </div>
+</div>
+<div class="post-container">
+    <div class="post-header">
+        <img src="{{ user.avatar.url }}" alt="Avatar" class="post-author-image">
+        <div class="user-info">
+            <span class="post-username">Username</span>
+            <span class="post-date">2024 |</span>
+            <span class="post-rating">Post rating: 90</span>
+            <hr>
+        </div>
+    </div>
+    <div class="author-comment">
+        <p>Post text post text post text</p>
+    </div>
+    <div class="post-image">
+        <img src="{{ user.avatar.url }}" alt="Post Image" class="main-image">
+    </div>
+    <div class="actions">
+        <button class="like-btn">Like</button>
+        <button class="dislike-btn">Dislike</button>
+    </div>
+    <hr>
+    <div class="comments">
+        <div class="comment">
+            <p>Comment 1</p>
+        </div>
+        <div class="comment">
+            <p>Comment 2</p>
+        </div>
+    </div>
+</div>
+{% endblock content %}
