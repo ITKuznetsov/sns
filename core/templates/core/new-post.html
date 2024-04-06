@@ -1,0 +1,47 @@
+{% extends "core/base.html" %}
+
+{% block title %}Create new post{% endblock title %}
+
+{% block css %}
+.post-container{
+    width: 40%;
+    align-items: center;
+    margin: 0 auto;
+}
+.new-post-form {
+    margin-top: 20px;
+}
+
+.new-post-form input[type="text"],
+.new-post-form input[type="file"] {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+}
+
+.new-post-form button {
+    padding: 10px;
+    background-color: #0faae4;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.new-post-form button:hover {
+    background-color: #0e99cd;
+}
+{% endblock css %}
+
+{% block content %}
+<div class="post-container new-post-form">
+    <h2>Create New Post</h2>
+    <p>{{ error }}</p>
+    <form action="{% url "core:new-post" %}" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <input type="text" name="text" id="text" placeholder="Enter post text" required>
+        <input type="file" name="image" id="image">
+        <button type="submit">Create Post</button>
+    </form>
+</div>
+{% endblock content %}

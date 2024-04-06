@@ -59,6 +59,7 @@
     <div class="header">
         <div class="header-links">
             <a href="{% url "core:index" %}">Index</a>
+            <a href="{% url "core:new-post" %}">New Post</a>
         </div>
         {% if user.is_authenticated %}
         <div class="avatar-container">

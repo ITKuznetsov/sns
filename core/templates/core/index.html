@@ -117,46 +117,21 @@ hr {
         <button class="like-btn">Like</button>
         <button class="dislike-btn">Dislike</button>
     </div>
-    <hr>
     <div class="comments">
         <div class="comment">
+            <hr>
             <span>@{{ user.username }}</span>
             <p>Comment 1</p>
             <hr>
         </div>
-        <div class="comment">
-            <p>Comment 2</p>
+        {% if user.is_authenticated %}
+        <div class="new-comment">
+            <form action="">
+                {% csrf_token %}
+                <input type="text" name="comment" placeholder="Leave a comment">
+                <button type="submit">Submit</button>
+            </form>
         </div>
+        {% endif %}
     </div>
-</div>
-<div class="post-container">
-    <div class="post-header">
-        <img src="{{ user.avatar.url }}" alt="Avatar" class="post-author-image">
-        <div class="user-info">
-            <span class="post-username">Username</span>
-            <span class="post-date">2024 |</span>
-            <span class="post-rating">Post rating: 90</span>
-            <hr>
-        </div>
-    </div>
-    <div class="author-comment">
-        <p>Post text post text post text</p>
-    </div>
-    <div class="post-image">
-        <img src="{{ user.avatar.url }}" alt="Post Image" class="main-image">
-    </div>
-    <div class="actions">
-        <button class="like-btn">Like</button>
-        <button class="dislike-btn">Dislike</button>
-    </div>
-    <hr>
-    <div class="comments">
-        <div class="comment">
-            <p>Comment 1</p>
-        </div>
-        <div class="comment">
-            <p>Comment 2</p>
-        </div>
-    </div>
-</div>
 {% endblock content %}
