@@ -36,7 +36,7 @@ def log(request):
             return render(request, 'users/login.html', {'message': message}) 
     else:
         if request.user.is_authenticated:
-            message = "By filling this form you'll login in another account!"
+            message = "By filling this form you'll log in in another account!"
             return render(request, 'users/login.html', {'message': message})
         return render(request, 'users/login.html')
 

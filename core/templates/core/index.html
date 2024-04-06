@@ -93,45 +93,71 @@ hr {
 .dislike-btn:hover {
     background-color: #db0202;
 }
+.not {
+    color: red;
+    text-align: center;
+}
 {% endblock css %}
 
 
 {% block content %}
-<div class="post-container">
-    <div class="post-header">
-        <img src="{{ user.avatar.url }}" alt="Avatar" class="post-author-image">
-        <div class="user-info">
-            <span class="post-username">Username</span>
-            <span class="post-date">2024 |</span>
-            <span class="post-rating">Post rating: 90</span>
+{% comment %} {% if not user.is_authenticated %}
+<div class="post-container not">
+<h1>! WARNING !</h1>
+<h2>To access the full functionality of the site, please:</h2>
+<h2><a href="{% url "users:registration" %}">create</a> or <a href="{% url "users:login" %}">sign in</a> into your account!</h2>
+</div>
+{% endif %} {% endcomment %}
+{% if posts %}
+    {% for post in posts %}
+        <div class="post-container">
+            <div class="post-header">
+                <img src="{{ post.author.avatar.url }}" alt="Avatar" class="post-author-image">
+                <div class="user-info">
+                    <span class="post-username">@{{ post.author.username }} |</span>
+                    <span class="post-date">{{ post.date }} |</span>
+                    <span class="post-rating">Rating: {{ post.likes|add:post.dislikes }}</span>
+                    <hr>
+                </div>
+            </div>
+            <div class="author-comment">
+                <p>{{ post.text }}</p>
+            </div>
+            {% if post.image %}
+                <div class="post-image">
+                    <img src="{{ post.image.url }}" alt="Post Image" class="main-image">
+                </div>
+            {% endif %}
+            {% if user.is_authenticated %}
+                <div class="actions">
+                    <button class="like-btn">Like</button>
+                    <button class="dislike-btn">Dislike</button>
+                </div>
+            {% endif %}
+            {% if post.post_comments %}
+                {% for comment in post.post_comments.all %}
+                <div class="comments">
+                    <div class="comment">
+                        <hr>
+                        <span>@{{ comment.author.username }}</span>
+                        <p>{{ comment.text }}</p>
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+            <p>Nothing</p>
+            {% endif %}
+            {% if user.is_authenticated %}
             <hr>
+            <div class="new-comment">
+                <form action="{% url 'core:new-comment' post.id %}" method="post">
+                    {% csrf_token %}
+                    <input type="text" id="comment" name="comment" placeholder="Leave a comment">
+                    <button type="submit">Submit</button>
+                </form>
+            </div>
+            {% endif %}
         </div>
-    </div>
-    <div class="author-comment">
-        <p>Post text post text post text</p>
-    </div>
-    <div class="post-image">
-        <img src="{{ user.avatar.url }}" alt="Post Image" class="main-image">
-    </div>
-    <div class="actions">
-        <button class="like-btn">Like</button>
-        <button class="dislike-btn">Dislike</button>
-    </div>
-    <div class="comments">
-        <div class="comment">
-            <hr>
-            <span>@{{ user.username }}</span>
-            <p>Comment 1</p>
-            <hr>
-        </div>
-        {% if user.is_authenticated %}
-        <div class="new-comment">
-            <form action="">
-                {% csrf_token %}
-                <input type="text" name="comment" placeholder="Leave a comment">
-                <button type="submit">Submit</button>
-            </form>
-        </div>
-        {% endif %}
-    </div>
+    {% endfor %}
+{% endif %}
 {% endblock content %}
