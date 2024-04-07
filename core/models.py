@@ -3,6 +3,7 @@ from users.models import User
 
 class Post(models.Model):
     text = models.TextField(max_length=500, null=False, blank=False)
+    # rating = models.IntegerField(default=0)
     likes = models.IntegerField(default=0)
     dislikes = models.IntegerField(default=0)
     image = models.ImageField(upload_to='posts/', null=True, blank=True)
