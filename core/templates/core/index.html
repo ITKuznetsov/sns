@@ -116,7 +116,7 @@ hr {
                 <div class="user-info">
                     <span class="post-username">@{{ post.author.username }} |</span>
                     <span class="post-date">{{ post.date }} |</span>
-                    <span class="post-rating">Rating: {{ post.likes|add:post.dislikes }}</span>
+                    <span class="post-rating">Rating: {{ post.rating }}</span>
                     <hr>
                 </div>
             </div>
@@ -144,6 +144,7 @@ hr {
                     <form action="{% url "core:superUn" post.id %}" method='post'>
                     {% csrf_token %}
                     <button class="like-btn">Unlike</button>
+                    </form>
                     <form action="{% url "core:dislike" post.id %}" method='post'>
                         {% csrf_token %}
                         <button class="dislike-btn">Dislike</button>

@@ -22,12 +22,11 @@ def like(request, post_id):
         post = Post.objects.get(id=post_id)
         user = request.user
         if user in post.disliked_by.all():
-            post.dislikes += 1
+            post.rating += 2
             post.disliked_by.remove(user)
-            post.likes += 1
             post.liked_by.add(user)
         else:
-            post.likes += 1
+            post.rating += 1
             post.liked_by.add(user)
         post.save()
     return redirect('core:index')
@@ -37,12 +36,11 @@ def dislike(request, post_id):
         post = Post.objects.get(id=post_id)
         user = request.user
         if user in post.liked_by.all():
-            post.likes -= 1
+            post.rating -= 2
             post.liked_by.remove(user)
-            post.dislikes -= 1
             post.disliked_by.add(user)
         else:
-            post.dislikes -= 1
+            post.rating -= 1
             post.disliked_by.add(user)
         post.save()
     return redirect('core:index')
@@ -52,13 +50,13 @@ def superUn(request, post_id):
         user = request.user
         post = Post.objects.get(id=post_id)
         if user in post.disliked_by.all():
-            post.dislikes += 1
+            post.rating += 1
             post.disliked_by.remove(user)
         if user in post.liked_by.all():
-            post.likes -= 1
+            post.rating -= 1
             post.liked_by.remove(user)
         post.save()
-        return redirect('core:index')
+    return redirect('core:index')
 
 
 def new_post(request):
