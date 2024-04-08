@@ -1,64 +1,239 @@
 {% extends "users/base.html" %}
 
-{% block title %}Profile{% endblock title %}
+{% block title %}@{{ profile.username }}'s profile{% endblock title %}
 
 {% block css %}
 .container {
     text-align: center;
+    margin-top: 10px;
 }
 .profile-avatar {
     width: 150px;
     height: 150px;
     border-radius: 50%;
+    margin-bottom: 10px;
+}
+.post-container {
+    width: 40%;
+    margin: 20px auto;
+    padding: 10px;
+    border: 1px solid #333;
+    border-radius: 5px;
+}
+hr {
+    border: none;
+    border-top: 1px solid #333;
+}
+.post-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.post-author-image {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-right: 10px;
+}
+
+.user-info {
+    flex: 1;
+}
+
+.username {
+    font-weight: bold;
+}
+
+.post-date {
+    color: #333;
+}
+
+.author-comment {
+    margin-bottom: 10px;
+}
+
+.post-image {
+    margin-bottom: 10px;
+}
+
+.main-image {
+    width: 100%;
+    height: auto;
+    border-radius: 2%;
+}
+
+.comments {
+    margin-bottom: 10px;
+}
+
+.comment {
+    margin-bottom: 5px;
+}
+.actions {
+    display: flex;
+    justify-content: center;
+    margin-top: 10px;
+}
+
+.like-btn {
+    margin: 0 5px;
+    padding: 5px 10px;
+    background-color: red;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    background-color: #0faae4;
+    cursor: pointer;
+}
+ .dislike-btn {
+    margin: 0 5px;
+    padding: 5px 10px;
+    background-color: red;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    background-color: #ff0000;
+    cursor: pointer;
+ }
+
+.like-btn:hover {
+    background-color: #0e99cd;
+}
+.dislike-btn:hover {
+    background-color: #db0202;
+}
+.not {
+    text-align: center;
+}
+.del-btn {
+    margin: 0 5px;
+    padding: 5px 10px;
+    background-color: red;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    background-color: #333;
+    cursor: pointer;
+}
+.del-btn:hover {
+    background-color: #444445;
 }
 {% endblock css %}
 
 {% block content %}
-{% comment %} <form action="{% url 'users:logout' %}" method="post">
-    {% csrf_token %}
-    <button type="submit">Logout</button>
-</form> {% endcomment %}
 <div class="container">
-{% if user.is_authenticated %}
-    <p>Hello, @{{ user.username }}</p>
-        {% if user.avatar %}
-        <img src="{{ user.avatar.url }}" alt="img error" class="profile-avatar">
-        {% endif %}
-        <p>Account created at: {{ user.date_joined }}</p>
-        <p>Last login at: {{ user.last_login }}</p>
-        <form action="{% url "users:logout" %}">
-        {% csrf_token %}
-        <button class="logout">Logout</button>
-        </form>
-        <form action="{% url "users:profile" %}" method='post' enctype="multipart/form-data">
-            {% csrf_token %}
-            <hr>
-            <hr>
-            <label for="email"><b>Email</b></label>
-            <input type="email" placeholder="{{ user.email }}" name="email" id="email">
-            <label for="username"><b>Username</b></label>
-            <input type="text" placeholder="@{{ user.username }}" name="username" id="username">
-            <label for="psw"><b>Password</b></label>
-            <input type="password" placeholder="Enter new password" name="psw" id="psw">
-            <hr>
-            <label for="fn"><b>First name</b></label>
-            <input type="text" placeholder="{{ user.first_name }}" name="fn" id="fn">
-            <label for="ln"><b>Last name</b></label>
-            <input type="text" placeholder="{{ user.last_name }}" name="ln" id="ln">
-            <hr>
-            <label for="avatar"><b>Avatar</b></label>
-            <input type="file" name="avatar" id="avatar">
-            <hr>
-            <hr>
-            <button type="submit" class="registerbtn">Save</button>
-        </form>
-    </div>
-{% else %}
-<h1>You're not autheficated!</h1>
-<hr>
-<p>Already have an account? <a href="{% url "users:login" %}">Sign in.</a></p>
-<p>Don't have an account? <a href="{% url "users:registration" %}">Create one!</a></p>
+    {% if profile.avatar %}
+    <img src="{{ profile.avatar.url }}" alt="img error" class="profile-avatar">
+    {% endif %}
+        <p>Date joined: {{ profile.date_joined }}</p>
+        <p>Username: @{{ profile.username }}</p>
+        <p>{{ profile.first_name }} {{ profile.last_name }}</p>
 </div>
+{% if profile.posts.all %}
+<hr>
+<div class="container">
+    <p>@{{ profile.username }} posts</p>
+</div>
+    {% for post in profile.posts.all %}
+        <div class="post-container">
+            <div class="post-header">
+                {% if user.id == post.author.id %}
+                    {% if post.author.avatar.url %}
+                    <a href="{% url "users:myprofile"%}"><img src="{{ post.author.avatar.url }}" alt="Avatar" class="post-author-image"></a>
+                    {% endif %}
+                    <div class="user-info">
+                        <span class="post-username">@<a href="{% url "users:myprofile" %}">{{ post.author.username }}</a></span>
+                        <span class="post-date">{{ post.date }} |</span>
+                        <span class="post-rating">Rating: {{ post.rating }}</span>
+                        <hr>
+                    </div>
+                    {% else %}
+                        <a href="{% url "users:profile" post.author.username %}"><img src="{{ post.author.avatar.url }}" alt="Avatar" class="post-author-image"></a>
+                        <div class="user-info">
+                            <span class="post-username">@<a href="{% url "users:profile" post.author.username %}">{{ post.author.username }}</a></span>
+                            <span class="post-date">{{ post.date }} |</span>
+                            <span class="post-rating">Rating: {{ post.rating }}</span>
+                            <hr>
+                        </div>
+                {% endif %}
+            </div>
+            <div class="author-comment">
+                <p>{{ post.text }}</p>
+            </div>
+            {% if post.image %}
+                <div class="post-image">
+                    <img src="{{ post.image.url }}" alt="Post Image" class="main-image">
+                </div>
+            {% endif %}
+            {% if user.is_authenticated %}
+                <div class="actions">
+                    {% if user.id == post.author.id %}
+                        <form action="{% url "core:delete" post.id %}" method='post'>
+                            {% csrf_token %}
+                            <button class="del-btn">Delete post</button>
+                        </form>
+                    {% else %}
+                        {% if user not in post.liked_by.all and user not in post.disliked_by.all %}
+                        <form action="{% url "core:like" post.id %}" method='post'>
+                            {% csrf_token %}
+                            <button class="like-btn">Like</button>
+                        </form>
+                        <form action="{% url "core:dislike" post.id %}" method='post'>
+                            {% csrf_token %}
+                            <button class="dislike-btn">Dislike</button>
+                        </form>
+                        {% endif %}
+                    {% endif %}
+                    {% if user in post.liked_by.all %}
+                    <form action="{% url "core:superUn" post.id %}" method='post'>
+                    {% csrf_token %}
+                    <button class="like-btn">Unlike</button>
+                    </form>
+                    <form action="{% url "core:dislike" post.id %}" method='post'>
+                        {% csrf_token %}
+                        <button class="dislike-btn">Dislike</button>
+                    </form>
+                    {% endif %}
+                    {% if user in post.disliked_by.all %}
+                    <form action="{% url "core:like" post.id %}" method='post'>
+                        {% csrf_token %}
+                        <button class="like-btn">Like</button>
+                    </form>
+                    <form action="{% url "core:superUn" post.id %}" method='post'>
+                        {% csrf_token %}
+                        <button class="dislike-btn">Undislike</button>
+                    </form>
+                    {% endif %}
+                </div>
+            {% endif %}
+            {% if post.post_comments %}
+                {% for comment in post.post_comments.all %}
+                <div class="comments">
+                    <div class="comment">
+                        <hr>
+                        {% if comment.author.id == user.id %}
+                        <span>@<a href="{% url "users:myprofile" %}">{{ comment.author.username }}</a></span>
+                        {% else %}
+                        <span>@<a href="{% url "users:profile" comment.author.username %}">{{ comment.author.username }}</a></span>
+                        {% endif %}
+                        <p>{{ comment.text }}</p>
+                    </div>
+                </div>
+                {% endfor %}
+            {% endif %}
+            {% if user.is_authenticated %}
+            <hr>
+            <div class="new-comment">
+                <form action="{% url 'core:new-comment' post.id %}" method="post">
+                    {% csrf_token %}
+                    <input type="text" id="comment" name="comment" placeholder="Leave a comment">
+                    <button type="submit">Submit</button>
+                </form>
+            </div>
+            {% endif %}
+        </div>
+    {% endfor %}
 {% endif %}
 
 {% endblock content %}

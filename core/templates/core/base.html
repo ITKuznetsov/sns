@@ -70,9 +70,9 @@
                 <button class="logout-btn">Logout</button>
             </form>
             {% if user.avatar %}
-            <a href="{% url "users:profile" %}"><img src="{{ user.avatar.url }}" alt="img error" class="avatar"></a>
+            <a href="{% url "users:myprofile" %}"><img src="{{ user.avatar.url }}" alt="img error" class="avatar"></a>
             {% endif %}
-            <a href="{% url "users:profile" %}" class="username"><span>@{{ user.username }}</span></a>
+            <a href="{% url "users:myprofile" %}" class="username"><span>@{{ user.username }}</span></a>
         </div>
         {% else %}
         <div class="avatar-container">

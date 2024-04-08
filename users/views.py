@@ -1,7 +1,11 @@
 from django.shortcuts import render, redirect
 # from django.contrib.auth.models import User
 from .models import User
-from django.contrib.auth import authenticate, login, logout  
+from django.contrib.auth import authenticate, login, logout
+
+def profile(request, profile_username):
+    profile = User.objects.get(username=profile_username)
+    return render(request, 'users/profile.html', {'profile': profile})
 
 def registration(request):
     if request.method == 'POST':
@@ -13,7 +17,7 @@ def registration(request):
             user = User.objects.create_user(email=email, username=username, password=psw)
             if user is not None:
                 login(request, user)
-                return redirect('users:profile')
+                return redirect('users:myprofile')
             else:
                 message = "Registration's error!"
                 return render(request, 'users/registration.html', {'message': message})
@@ -30,7 +34,7 @@ def log(request):
         user = authenticate(request, username=username, password=psw)
         if user is not None:
             login(request, user)
-            return redirect('users:profile')
+            return redirect('users:myprofile')
         else:
             message = "Login's error!"
             return render(request, 'users/login.html', {'message': message}) 
@@ -40,8 +44,9 @@ def log(request):
             return render(request, 'users/login.html', {'message': message})
         return render(request, 'users/login.html')
 
-def profile(request):
+def my_profile(request):
     user = request.user
+    posts = user.posts
     if request.method == 'POST':
         email = request.POST.get('email')
         username = request.POST.get('username')
@@ -69,9 +74,9 @@ def profile(request):
         if password:
             login(request, user)
 
-        return redirect('users:profile')
+        return redirect('users:myprofile')
 
-    return render(request, 'users/profile.html', {'user': user})
+    return render(request, 'users/myprofile.html', {'user': user, 'posts': posts})
 
 def out(request):
     logout(request)

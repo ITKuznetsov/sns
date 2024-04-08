@@ -94,8 +94,20 @@ hr {
     background-color: #db0202;
 }
 .not {
-    color: red;
     text-align: center;
+}
+.del-btn {
+    margin: 0 5px;
+    padding: 5px 10px;
+    background-color: red;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    background-color: #333;
+    cursor: pointer;
+}
+.del-btn:hover {
+    background-color: #444445;
 }
 {% endblock css %}
 
@@ -112,13 +124,25 @@ hr {
     {% for post in posts %}
         <div class="post-container">
             <div class="post-header">
-                <img src="{{ post.author.avatar.url }}" alt="Avatar" class="post-author-image">
-                <div class="user-info">
-                    <span class="post-username">@{{ post.author.username }} |</span>
-                    <span class="post-date">{{ post.date }} |</span>
-                    <span class="post-rating">Rating: {{ post.rating }}</span>
-                    <hr>
-                </div>
+                {% if user.id == post.author.id %}
+                    {% if post.author.avatar.url %}
+                    <a href="{% url "users:myprofile"%}"><img src="{{ post.author.avatar.url }}" alt="Avatar" class="post-author-image"></a>
+                    {% endif %}
+                    <div class="user-info">
+                        <span class="post-username">@<a href="{% url "users:myprofile" %}">{{ post.author.username }}</a></span>
+                        <span class="post-date">{{ post.date }} |</span>
+                        <span class="post-rating">Rating: {{ post.rating }}</span>
+                        <hr>
+                    </div>
+                    {% else %}
+                        <a href="{% url "users:profile" post.author.username %}"><img src="{{ post.author.avatar.url }}" alt="Avatar" class="post-author-image"></a>
+                        <div class="user-info">
+                            <span class="post-username">@<a href="{% url "users:profile" post.author.username %}">{{ post.author.username }}</a></span>
+                            <span class="post-date">{{ post.date }} |</span>
+                            <span class="post-rating">Rating: {{ post.rating }}</span>
+                            <hr>
+                        </div>
+                {% endif %}
             </div>
             <div class="author-comment">
                 <p>{{ post.text }}</p>
@@ -130,15 +154,22 @@ hr {
             {% endif %}
             {% if user.is_authenticated %}
                 <div class="actions">
-                    {% if user not in post.liked_by.all and user not in post.disliked_by.all %}
-                    <form action="{% url "core:like" post.id %}" method='post'>
-                        {% csrf_token %}
-                        <button class="like-btn">Like</button>
-                    </form>
-                    <form action="{% url "core:dislike" post.id %}" method='post'>
-                        {% csrf_token %}
-                        <button class="dislike-btn">Dislike</button>
-                    </form>
+                    {% if user.id == post.author.id %}
+                        <form action="{% url "core:delete" post.id %}" method='post'>
+                            {% csrf_token %}
+                            <button class="del-btn">Delete post</button>
+                        </form>
+                    {% else %}
+                        {% if user not in post.liked_by.all and user not in post.disliked_by.all %}
+                        <form action="{% url "core:like" post.id %}" method='post'>
+                            {% csrf_token %}
+                            <button class="like-btn">Like</button>
+                        </form>
+                        <form action="{% url "core:dislike" post.id %}" method='post'>
+                            {% csrf_token %}
+                            <button class="dislike-btn">Dislike</button>
+                        </form>
+                        {% endif %}
                     {% endif %}
                     {% if user in post.liked_by.all %}
                     <form action="{% url "core:superUn" post.id %}" method='post'>
@@ -167,13 +198,15 @@ hr {
                 <div class="comments">
                     <div class="comment">
                         <hr>
-                        <span>@{{ comment.author.username }}</span>
+                        {% if comment.author.id == user.id %}
+                        <span>@<a href="{% url "users:myprofile" %}">{{ comment.author.username }}</a></span>
+                        {% else %}
+                        <span>@<a href="{% url "users:profile" comment.author.username %}">{{ comment.author.username }}</a></span>
+                        {% endif %}
                         <p>{{ comment.text }}</p>
                     </div>
                 </div>
                 {% endfor %}
-            {% else %}
-            <p>Nothing</p>
             {% endif %}
             {% if user.is_authenticated %}
             <hr>
@@ -187,5 +220,18 @@ hr {
             {% endif %}
         </div>
     {% endfor %}
+{% else %}
+    {% if user.is_authenticated %}
+    <div class="post-container not">
+    <h1>! NO POSTS YET !</h1>
+    <h2>You can create new posts <a href="{% url "core:new-post" %}">here</a>.</h2>
+    </div>
+    {% else %}
+    <div class="post-container not">
+    <h1>! NO POSTS YET !</h1>
+    <h2>To create posts, please <a href="{% url "users:registration" %}">register</a> or <a href="{% url "users:login" %}">sign in</a>.</h2>
+    <h3>After that you will be able to create new posts <a href="{% url "core:new-post" %}">here</a>.</h3>
+    </div>
+    {% endif %}
 {% endif %}
 {% endblock content %}

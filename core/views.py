@@ -17,6 +17,11 @@ def new_comment(request, post_id):
             comment = Comment.objects.create(post=post, text=text, author=author)
     return redirect('core:index')
 
+def delete(request, post_id):
+    if request.method == 'POST':
+        post = Post.objects.get(id=post_id).delete()
+    return redirect('core:index')
+
 def like(request, post_id):
     if request.method == 'POST':
         post = Post.objects.get(id=post_id)
