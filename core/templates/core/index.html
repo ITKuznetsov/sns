@@ -69,7 +69,6 @@ hr {
 .like-btn {
     margin: 0 5px;
     padding: 5px 10px;
-    background-color: red;
     color: white;
     border: none;
     border-radius: 5px;
@@ -79,7 +78,6 @@ hr {
  .dislike-btn {
     margin: 0 5px;
     padding: 5px 10px;
-    background-color: red;
     color: white;
     border: none;
     border-radius: 5px;
@@ -125,7 +123,7 @@ hr {
         <div class="post-container">
             <div class="post-header">
                 {% if user.id == post.author.id %}
-                    {% if post.author.avatar.url %}
+                    {% if post.author.avatar %}
                     <a href="{% url "users:myprofile"%}"><img src="{{ post.author.avatar.url }}" alt="Avatar" class="post-author-image"></a>
                     {% endif %}
                     <div class="user-info">

@@ -119,6 +119,19 @@ hr {
 .del-btn:hover {
     background-color: #444445;
 }
+.accept-btn {
+    margin-top: 10px;
+    border: none;
+    padding: 5px 10px;
+    background-color: red;
+    color: white;
+    background-color: #189159;
+    cursor: pointer;
+    border-radius: 5px;
+}
+.accept-btn:hover {
+        background-color: #15794b;
+}
 {% endblock css %}
 
 {% block content %}
@@ -126,9 +139,43 @@ hr {
     {% if profile.avatar %}
     <img src="{{ profile.avatar.url }}" alt="img error" class="profile-avatar">
     {% endif %}
-        <p>Date joined: {{ profile.date_joined }}</p>
-        <p>Username: @{{ profile.username }}</p>
-        <p>{{ profile.first_name }} {{ profile.last_name }}</p>
+    <p>Date joined: {{ profile.date_joined }}</p>
+    <p>Username: @{{ profile.username }}</p>
+    <p>{{ profile.first_name }} {{ profile.last_name }}</p>
+        {% if user.friends.all %}
+        {% for friend in user.friends.all %}
+            {% if friend.username == profile.username %}
+            <form action="{% url "users:delete" friend.username %}" method='post'>
+                {% csrf_token %}
+                <button class="action-btn delete-btn">Delete from friends</button>
+            </form>
+            {% endif %}
+        {% endfor %}
+        {% else %}
+        {% if requests %}
+            {% for request in requests %}
+                {% if request.to_user.id == profile.id and request.from_user.id == user.id %}
+                    <form action="{% url "users:delete_request" profile.username %}" method='post'>
+                    {% csrf_token %}
+                    <button class="action-btn delete-btn">Delete my request</button>
+                </form>
+                {% endif %}
+                {% if request.to_user.id == user.id and request.from_user.id == profile.id %}
+                    <span>This user sent friend request to you</span>
+                    <form action="{% url "users:accept" request.from_user.username %}" method='post'>
+                    {% csrf_token %}
+                    <button class="accept-btn">Accept</button>
+                    </form>
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+        {% endif %}
+        {% if not user.friends.all.exists and not requests %}
+        <form action="{% url "users:friend_request" profile.username %}" method='post'>
+            {% csrf_token %}
+            <button class="like-btn">Send Friend Request</button>
+        </form>
+        {% endif %}
 </div>
 {% if profile.posts.all %}
 <hr>

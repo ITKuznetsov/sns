@@ -1,0 +1,141 @@
+{% extends "users/base.html" %}
+
+{% block title %}Friends{% endblock title %}
+
+{% block css %}
+.friend-container {
+    width: 60%;
+    margin: 20px auto;
+}
+
+.friend {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.friend-avatar {
+    width: 55px;
+    height: 55px;
+    border-radius: 50%;
+    margin-right: 20px;
+}
+
+.friend-info {
+    flex: 1;
+}
+
+.friend-username {
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.friend-actions {
+    display: flex;
+    justify-content: space-between;
+}
+
+.action-btn {
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+.accept-btn {
+    border: none;
+    margin: 0 5px;
+    padding: 5px 10px;
+    background-color: red;
+    color: white;
+    background-color: #189159;
+    cursor: pointer;
+}
+.accept-btn:hover {
+        background-color: #15794b;
+}
+.message-btn {
+    margin: 0 5px;
+    padding: 5px 10px;
+    color: white;
+    border: none;
+    background-color: #189159;
+    cursor: pointer;
+    background-color: #0faae4;
+}
+.message-btn:hover {
+    background-color: #0e99cd;
+}
+
+.delete-btn {
+    margin: 0 5px;
+    padding: 5px 10px;
+    background-color: red;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    background-color: #333;
+    cursor: pointer;
+}
+.delete-btn:hover {
+    background-color: #444445;
+}
+
+.friend-request {
+    margin-bottom: 20px;
+}
+h1 {
+    text-align: center;
+}
+{% endblock css %}
+{% block content %}
+<div class="friend-container">
+    <div class="friend-request">
+        {% for request in friend_requests %}
+        {% if request %}
+        <p>Friend Requests</p>
+        <div class="friend">
+            {% if request.from_user.avatar %}
+            <a href="{% url "users:profile" request.from_user.username %}"><img src="{{ request.from_user.avatar.url }}" alt="Avatar" class="friend-avatar"></a>
+            {% endif %}
+            <div class="friend-info">
+                <a href="{% url "users:profile" request.from_user.username %}"><span class="friend-username">@{{ request.from_user.username }}</span></a>
+                <span>|</span>
+                <span>Request sent at: {{ request.created_at }}</span>
+            </div>
+            <div class="friend-actions">
+                <form action="{% url "users:accept" request.from_user.username %}" method='post'>
+                    {% csrf_token %}
+                    <button class="action-btn accept-btn">Accept</button>
+                </form>
+            </div>
+        </div>
+        {% endif %}
+        {% endfor %}
+    </div>
+
+    <div class="friends-list">
+        {% for friend in user.friends.all %}
+        {% if friend %}
+        <p>Friends</p>
+        <div class="friend">
+            {% if friend.avatar %}
+            <a href="{% url "users:profile" friend.username %}"><img src="{{ friend.avatar.url }}" alt="Avatar" class="friend-avatar"></a>
+            {% endif %}
+            <div class="friend-info">
+                <a href="{% url "users:profile" friend.username %}"><span class="friend-username">@{{ friend.username }}</span></a>
+            </div>
+            <div class="friend-actions">
+                <form action="{% url "users:delete" friend.username %}" method='post'>
+                {% csrf_token %}
+                <button class="action-btn delete-btn">Delete</button>
+                </form>
+                <button class="action-btn message-btn">Message</button>
+            </div>
+        </div>
+        {% endif %}
+        {% endfor %}
+    </div>
+</div>
+{% if not user.friends.all.exists and not friend_requests.exists %}
+    <h1>No friends or requests yet :(</h1>
+{% endif %}
+{% endblock content %}
